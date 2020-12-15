@@ -1,0 +1,31 @@
+# -----------------------------------------
+# Syntax colouring for TA6932 library
+# -----------------------------------------
+
+
+##################################################
+# Datatypes (such as objects)(KEYWORD1)
+##################################################
+TA6932					KEYWORD1
+
+
+##################################################
+# Methods / functions (KEYWORD2)
+##################################################
+begin 					KEYWORD2
+sendCommand 			KEYWORD2
+reset 					KEYWORD2
+displaySS 				KEYWORD2
+updateDisplay 			KEYWORD2
+displayCache 			KEYWORD2
+
+
+
+##################################################
+# Constants (LITERAL1)
+##################################################
+ACTIVATE				LITERAL1
+WRITE_LOC				LITERAL1
+WRITE_INC				LITERAL1
+BRIGHTNESS				LITERAL1
+
