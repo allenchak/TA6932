@@ -5,7 +5,7 @@ Library for Arduino and STM8s MCU.
 Demo sketch for STM8s103 / STM8s003, dependence [STM8s Core](https://github.com/tenbaht/sduino/)
 
 # Pinout
-![Connector Pinout](resource/Connector%20Pinout.JPG)
-![7Segment Pinout](resource/7Segment%20Pinout.JPG)
-![TA6932% Pinout](resource/TA6932%20Pinout.JPG)
+![Connector Pinout](extras/Connector%20Pinout.JPG)
+![7Segment Pinout](extras/7Segment%20Pinout.JPG)
+![TA6932% Pinout](extras/TA6932%20Pinout.JPG)
 
