@@ -26,18 +26,38 @@ void setup() {
     tm.displayCache[10] = 0x6D; //5
     tm.updateDisplay();
     delay(1000);
+    
+    for( uint8_t b=0; b<8; b++){
+      tm.setBrightness(b);
+      delay(1000);
+    }
+
     tm.displayCache[8]  = 0x00; //:
     tm.updateDisplay();
     delay(1000);
     tm.displayCache[8]  = 0x01; //:
     tm.updateDisplay();
     delay(1000);
+
+    tm.displayOff();
+    delay(3000);
+
+    tm.displayOn();
+    delay(3000);
+
+    tm.displayOff();
+    delay(3000);
+
     tm.displayCache[6] = 0;
     tm.displayCache[7] = 0;
     tm.displayCache[8] = 0;
     tm.displayCache[9] = 0;
     tm.displayCache[10] = 0;
-    tm.updateDisplay();
+
+    tm.displayOn();
+    delay(3000);
+
+    //tm.updateDisplay();
 }
 
 void loop() {

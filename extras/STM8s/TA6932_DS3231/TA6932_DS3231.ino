@@ -1,5 +1,7 @@
 
 // TA6932 custom library for STM8s, fully following the datasheet
+#define TA6932_FUNC_SET_BRI    false //enable TA6932 setBrightness
+#define TA6932_FUNC_DISPLAY    false //enable TA6932 display on/off
 
 // DS3231 (Basic features only. Without Date, Alarm, etc)
 // ✔ Get Hour 
@@ -15,6 +17,8 @@
 #define DS3231_FUNC_GET_TEMP   false //enable DS3231 Get temperture (+43 Bytes)   [ PASS ]
 #define DS3231_FUNC_SET_DOW    false //enable DS3231 Set Day-of-week (+17 bytes)  [untest]
 #define DS3231_FUNC_GET_DOW    false //enable DS3231 Get Day-of-week (+12 bytes)  [ PASS ]
+
+
 
 #include <I2C.h> //For DS3231
 
@@ -39,12 +43,17 @@
 //////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////
 
-#define TA6932_CMD_ACTIVATE      0b10001111 // 0x8F
+#if TA6932_FUNC_SET_BRI == true
+#define TA6932_CMD_CTRL_BASE     0b10000000 // 0x80
+#else
+#define TA6932_CMD_CTRL_BASE     0b10000111 // 0x80
+#endif
 #define TA6932_CMD_WRITE_INC     0b01000000 // 0x40
-#define TA6932_CMD_BRIGHTNESS    0b10000000 // 0x80
 #define TA6932_ADDR_FIRST_DIGIT  0b11000110 // 0xC6
 
 uint8_t _ta6932_displayBuffer[5];
+uint8_t _ta6932_brightness = 7;
+bool _ta6932_displayOn = true;
 
 static char ta6932_Digit_Table[] = {
   0x3F, // 0
@@ -84,8 +93,8 @@ void TA6932_empty()
         _ta6932_displayBuffer[p] = 0x00;
     }
     digitalWrite(PIN_TA6932_STB, HIGH);
-    TA6932_sendCommand(TA6932_CMD_WRITE_INC); // set auto increment mode
-    TA6932_sendCommand(TA6932_CMD_ACTIVATE);
+
+    TA6932_sendCommand( TA6932_CMD_CTRL_BASE | ((uint8_t)_ta6932_displayOn << 3) | _ta6932_brightness );
 }
 
 void TA6932_begin()
@@ -94,9 +103,39 @@ void TA6932_begin()
     pinMode(PIN_TA6932_CLK, OUTPUT);
     pinMode(PIN_TA6932_DIN, OUTPUT);
     
-    TA6932_sendCommand(TA6932_CMD_ACTIVATE);
     TA6932_empty();
 }
+
+#if TA6932_FUNC_SET_BRI == true
+void TA6932_setBrightness(uint8_t b)
+{
+    if( b > 0x07){
+        b = 0x07;
+    }
+    if( _ta6932_brightness != b ){
+        _ta6932_brightness = b;
+        TA6932_updateDisplay();
+    }
+}
+#endif
+
+#if TA6932_FUNC_DISPLAY == true
+void TA6932_displayOn()
+{
+    if( !_ta6932_displayOn ){
+        _ta6932_displayOn = true;
+        TA6932_updateDisplay();
+    }
+}
+
+void displayOff()
+{
+    if( _ta6932_displayOn ){
+        _ta6932_displayOn = false;
+        TA6932_updateDisplay();
+    }
+}
+#endif
 
 void TA6932_updateDisplay()
 {
@@ -107,7 +146,8 @@ void TA6932_updateDisplay()
         shiftOut(PIN_TA6932_DIN, PIN_TA6932_CLK, LSBFIRST, _ta6932_displayBuffer[p]);
     }
     digitalWrite(PIN_TA6932_STB, HIGH);
-    TA6932_sendCommand(TA6932_CMD_ACTIVATE); // set auto increment mode
+
+    TA6932_sendCommand( TA6932_CMD_CTRL_BASE | ((uint8_t)_ta6932_displayOn << 3) | _ta6932_brightness );
 }
 
 void TA6932_showTime(uint8_t left2, uint8_t right2, bool colonOn)

@@ -4,10 +4,10 @@
 
 #include "Arduino.h"
 
-#define ACTIVATE    0b10001111 // 0x8f
+#define CTRL_BASE   0b10000000 // 0x80
 #define WRITE_LOC   0b01000100 // 0x44
 #define WRITE_INC   0b01000000 // 0x40
-#define BRIGHTNESS  0b10000000 // 0x80
+#define DISP_ADDR   0b11000000 // 0xC0
 
 class TA6932
 {
@@ -17,8 +17,11 @@ class TA6932
     void begin();
     void sendCommand(uint8_t value);
     void reset();
+    void setBrightness(uint8_t b);
     void displaySS(uint8_t position, uint8_t value);
     void updateDisplay();
+    void displayOn();
+    void displayOff();
     
     uint8_t displayCache[16];
 
@@ -26,6 +29,8 @@ class TA6932
     uint8_t PIN_STB;
     uint8_t PIN_DIN;
     uint8_t PIN_CLK;
+    uint8_t _brightness = 0;
+    bool _displayOn = true;
 };
 
 #endif
